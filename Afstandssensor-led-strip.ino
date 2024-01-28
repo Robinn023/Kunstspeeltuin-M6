@@ -39,8 +39,14 @@ void loop() {
     targetColor = strip.Color(255, 0, 0);  // Rood
   } else if (distance < 125) {
     targetColor = strip.Color(0, 255, 0);  // Groen
+  } else if (distance < 175) {
+    targetColor = strip.Color(0, 0, 255);  // Blauw
   } else {
-    targetColor = strip.Color(0, 0, 255);  // blauw
+    // Regenboog effect bij een afstand van 175 centimeter of meer
+    rainbowEffect();
+    delay(500); // Voeg een vertraging van 0,5 seconde toe nadat het regenboogeffect is voltooid
+    return;
+  }
   }
 
   // Geleidelijke kleurovergang
@@ -70,4 +76,29 @@ void colorWipe(uint32_t color, int wait) {
   }
   strip.show();
   delay(wait);
+}
+
+// Functie voor het regenboogeffect
+void rainbowEffect() {
+  for (int i = 0; i < 256; i++) {
+    for (int j = 0; j < strip.numPixels(); j++) {
+      strip.setPixelColor(j, Wheel((i + j) & 255));
+    }
+    strip.show();
+    delay(3);
+  }
+}
+
+// Functie voor het genereren van kleuren in het regenboogeffect
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if (WheelPos < 85) {
+    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  }
+  if (WheelPos < 170) {
+    WheelPos -= 85;
+    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+  WheelPos -= 170;
+  return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
